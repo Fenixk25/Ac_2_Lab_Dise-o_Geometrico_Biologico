@@ -1,0 +1,70 @@
+#Erick Jair Cisneros Hinojosa 1768238
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn import metrics 
+
+col_names = ['Serial_No', 'GRE_Score', 'TOEFL_Score', 'University_Rating', 'SOP', 'LOR',
+          'CGPA', 'Research', 'Chance_of_Admit']
+df = pd.read_csv('Admission_Predict_Ver1.1.csv', header=None, names=col_names)
+df.head()
+
+arreglox = df.drop('Research', axis=1)
+arregloy = df['Research']
+
+arreglox
+
+arregloy
+
+le_Serial_No = LabelEncoder()
+
+arreglox['Serial_No_n'] = le_Serial_No.fit_transform(arreglox['Serial_No'])
+arreglox['GRE_Score_n'] = le_Serial_No.fit_transform(arreglox['GRE_Score'])
+arreglox['TOEFL_Score_n'] = le_Serial_No.fit_transform(arreglox['TOEFL_Score'])
+arreglox['University_Rating_n'] = le_Serial_No.fit_transform(arreglox['University_Rating'])
+arreglox['SOP_n'] = le_Serial_No.fit_transform(arreglox['SOP'])
+arreglox['LOR_n'] = le_Serial_No.fit_transform(arreglox['LOR'])
+arreglox['CGPA_n'] = le_Serial_No.fit_transform(arreglox['CGPA'])
+arreglox['Chance_of_Admit_n'] = le_Serial_No.fit_transform(arreglox['Chance_of_Admit'])
+arreglox.head()
+
+arreglox_n = arreglox.drop(['Serial_No','GRE_Score', 'TOEFL_Score', 'University_Rating', 'SOP', 'LOR', 'CGPA', 'Chance_of_Admit'], axis=1)
+arreglox_n.head()
+
+X_train, X_test, y_train, y_test = train_test_split(arreglox_n, arregloy, test_size=0.3, random_state=1)
+
+clf = DecisionTreeClassifier()
+
+clf = DecisionTreeClassifier()
+clf = clf.fit(X_train,y_train)
+y_pred = clf.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred)*100,"%")
+
+from sklearn.tree import export_graphviz
+from sklearn.externals.six import StringIO  
+from IPython.display import Image  
+import pydotplus
+
+dot_data = StringIO()
+export_graphviz(clf, out_file=dot_data,  
+                filled=True, rounded=True,
+                special_characters=True,class_names=['0','1'])
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+graph.write_png('Admission_Predict_Ver1.1.png')
+Image(graph.create_png())
+
+clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+clf = clf.fit(X_train,y_train)
+y_pred = clf.predict(X_test)
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred)*100,"%")
+
+dot_data = StringIO()
+export_graphviz(clf, out_file=dot_data,  
+                filled=True, rounded=True,
+                special_characters=True,class_names=['0','1'])
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+graph.write_png('Admission_Predict_Ver1.1.png')
+Image(graph.create_png())
